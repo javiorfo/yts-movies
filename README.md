@@ -1,2 +1,2 @@
-# yts-torrents
-API to fetch YTS movies info and torrent links
+# yts-movies
+*Library to search YTS movies info and torrent links*

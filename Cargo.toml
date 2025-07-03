@@ -1,0 +1,25 @@
+[package]
+name = "yts-movies"
+version = "0.1.0"
+edition = "2024"
+description = "Library to search YTS movies info and torrent links"
+authors = ["Javier Orfo <javierorfo@protonmail.com>"]
+license = "MIT"
+repository = "https://github.com/javiorfo/yts-movies"
+homepage = "https://github.com/javiorfo/yts-movies#readme"
+keywords = ["yts", "yify", "yts-movies", "yts-torrents", "torrents"]
+
+[lib]
+name = "yts_movies"
+path = "src/lib.rs"
+
+[dependencies]
+reqwest = { version = "0.12.20", features = ["blocking"], optional = true }
+tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"], optional = true }
+scraper = "0.23.1"
+thiserror = "2.0.12"
+
+[features]
+default = ["async"]
+async = ["reqwest", "tokio"]
+blocking = ["reqwest"]
