@@ -1,6 +1,8 @@
 use std::time::Duration;
 
-use crate::{Response, client::Filter};
+use reqwest::header::USER_AGENT;
+
+use crate::{Movie, Response, Torrent, client::Filter};
 
 pub struct Yts<'a> {
     host: &'a str,
@@ -26,16 +28,27 @@ impl<'a> Yts<'a> {
 
         let response = client
             .get(self.create_url(movie_name, &filter))
+            .header(USER_AGENT, "Mozilla/5.0 (Linux x86_64)")
             .timeout(self.timeout)
             .send()?;
 
-        let response = Response::create(self.host, &response.text()?, filter.page)?;
-
-        Ok(response)
+        Response::create(self.host, &response.text()?, filter.page)
     }
 
     pub fn search(&self, movie_name: &str) -> crate::Result<Response> {
         self.search_with_filter(movie_name, crate::Filters::default().build())
+    }
+
+    pub fn torrents(&self, movie: &Movie) -> crate::Result<Vec<Torrent>> {
+        let client = reqwest::blocking::Client::new();
+
+        let response = client
+            .get(&movie.link)
+            .header(USER_AGENT, "Mozilla/5.0 (Linux x86_64)")
+            .timeout(self.timeout)
+            .send()?;
+
+        Torrent::create(self.host, &response.text()?)
     }
 
     fn create_url(&self, movie_name: &str, filter: &Filter) -> String {
@@ -57,13 +70,19 @@ impl<'a> Yts<'a> {
 
 #[cfg(test)]
 mod test {
-    use super::Yts;
     use crate::Filters;
+
+    use super::Yts;
 
     #[test]
     fn test_blocking_search() {
-        let client = Yts::default();
-        let results = client.search_with_filter("caca", Filters::default().page(1).build());
-        println!("{results:#?}");
+        let yts = Yts::default();
+        let results = yts.search_with_filter(
+            "the godfather",
+            Filters::default().year(crate::Year::Equal(1974)).build(),
+        );
+
+        let torrents = yts.torrents(&results.unwrap().movies[0]);
+        println!("{torrents:#?}");
     }
 }

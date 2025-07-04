@@ -3,7 +3,7 @@ mod core;
 
 pub use client::{Filters, OrderBy, Quality, Rating, Year};
 pub use core::{
-    Page, Response,
+    Page, Response, Torrent,
     model::{Genre, Movie},
 };
 
@@ -33,9 +33,6 @@ pub enum Error {
     #[error(transparent)]
     ParseIntError(#[from] std::num::ParseIntError),
 
-    #[error("Error getting link to the movie")]
-    MovieLinkError,
-
     #[error("Error getting movie rating")]
     MovieRatingError,
 
@@ -44,9 +41,6 @@ pub enum Error {
 
     #[error("Error getting movie name")]
     MovieNameError,
-
-    #[error("Error getting movie image")]
-    MovieImageError,
 }
 
 /// Convenient result type for this crate.

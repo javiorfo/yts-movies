@@ -118,6 +118,21 @@ impl From<&Quality> for &str {
     }
 }
 
+impl From<&str> for Quality {
+    fn from(value: &str) -> Self {
+        if value.contains("720") {
+            return Self::P720;
+        }
+        if value.contains("1080") {
+            return Self::P1080;
+        }
+        if value.contains("2160") {
+            return Self::P2160;
+        }
+        Self::ThreeD
+    }
+}
+
 #[derive(Debug)]
 pub enum Rating {
     All,
@@ -152,7 +167,7 @@ impl From<&Rating> for &str {
 #[derive(Debug)]
 pub enum Year {
     All,
-    Exact(u32),
+    Equal(u32),
     Range2000to2009,
     Range1990to1999,
     Range1980to1989,
@@ -165,7 +180,7 @@ impl From<&Year> for String {
     fn from(value: &Year) -> Self {
         match value {
             Year::All => "0".to_string(),
-            Year::Exact(year) => year.to_string(),
+            Year::Equal(year) => year.to_string(),
             Year::Range2000to2009 => "2000-2009".to_string(),
             Year::Range1990to1999 => "1990-1999".to_string(),
             Year::Range1980to1989 => "1980-1989".to_string(),
