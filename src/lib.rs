@@ -1,7 +1,7 @@
 mod client;
 mod core;
 
-pub use client::{Filter, Filters, OrderBy, Quality, Rating, Year};
+pub use client::{Filters, OrderBy, Quality, Rating, Year};
 pub use core::{
     Page, Response,
     model::{Genre, Movie},
@@ -35,9 +35,6 @@ pub enum Error {
 
     #[error("Error getting link to the movie")]
     MovieLinkError,
-
-    #[error("Error getting movie count")]
-    MovieCountError,
 
     #[error("Error getting movie rating")]
     MovieRatingError,

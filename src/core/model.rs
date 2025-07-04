@@ -58,3 +58,37 @@ pub enum Genre {
     War,
     Western,
 }
+
+impl From<&Genre> for &str {
+    fn from(value: &Genre) -> Self {
+        match value {
+            Genre::All => "all",
+            Genre::Action => "action",
+            Genre::Adventure => "adventure",
+            Genre::Animation => "animation",
+            Genre::Biography => "biography",
+            Genre::Comedy => "comedy",
+            Genre::Crime => "crime",
+            Genre::Documentary => "documentary",
+            Genre::Drama => "drama",
+            Genre::Family => "family",
+            Genre::Fantasy => "fantasy",
+            Genre::FilmNoir => "film-noir",
+            Genre::GameShow => "game-show",
+            Genre::History => "history",
+            Genre::Horror => "horror",
+            Genre::Music => "music",
+            Genre::Musical => "musical",
+            Genre::Mystery => "mystery",
+            Genre::News => "news",
+            Genre::RealityTV => "reality-tv",
+            Genre::Romance => "romance",
+            Genre::SciFi => "sci-fi",
+            Genre::Sport => "sport",
+            Genre::TalkShow => "talk-show",
+            Genre::Thriller => "thriller",
+            Genre::War => "war",
+            Genre::Western => "western",
+        }
+    }
+}

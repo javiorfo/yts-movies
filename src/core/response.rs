@@ -1,5 +1,7 @@
 use scraper::{Html, Selector};
 
+use crate::Genre;
+
 use super::model;
 
 #[derive(Debug)]
@@ -34,11 +36,9 @@ impl Response {
         let total: u32 = document
             .select(&Selector::parse("div.container h2 b")?)
             .next()
-            .ok_or(crate::Error::MovieCountError)?
-            .text()
-            .next()
+            .and_then(|value| value.text().next())
             .and_then(|value| value.parse().ok())
-            .ok_or(crate::Error::MovieCountError)?;
+            .unwrap_or_default();
 
         let mut movies = Vec::new();
         if let Some(table) = document.select(&Selector::parse("section div.row")?).next() {
@@ -76,6 +76,12 @@ impl Response {
                     .get(info.len() - 2)
                     .ok_or(crate::Error::MovieNameError)?
                     .to_string();
+
+                //                 let mut genres = Vec::new();
+                //                 for &value in &info[1..info.len() - 2] {
+                //                     let value: Genre = value.into();
+                //                     genres.push(value);
+                //                 }
 
                 movies.push(model::Movie::new(name, year, rating, vec![], image, link));
             }
