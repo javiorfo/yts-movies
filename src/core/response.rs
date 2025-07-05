@@ -25,8 +25,8 @@ impl Page {
 
 #[derive(Debug)]
 pub struct Response {
-    page: Page,
-    pub(crate) movies: Vec<model::Movie>,
+    pub page: Page,
+    pub movies: Vec<model::Movie>,
 }
 
 impl Response {
@@ -105,7 +105,7 @@ pub struct Torrent {
 }
 
 impl Torrent {
-    pub fn new(
+    pub(crate) fn new(
         quality: &str,
         size: &str,
         language: &str,
@@ -122,9 +122,7 @@ impl Torrent {
             link,
         }
     }
-}
 
-impl Torrent {
     pub(crate) fn create(host: &str, html: &str) -> crate::Result<Vec<Self>> {
         let document = Html::parse_document(html);
 

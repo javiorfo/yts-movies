@@ -23,3 +23,9 @@ thiserror = "2.0.12"
 default = ["async"]
 async = ["reqwest", "tokio"]
 blocking = ["reqwest"]
+
+[[example]]
+name = "simple"
+
+[[example]]
+name = "blocking"

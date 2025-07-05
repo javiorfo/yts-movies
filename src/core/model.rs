@@ -5,7 +5,7 @@ pub struct Movie {
     pub rating: f32,
     pub genre: Vec<Genre>,
     pub image: String,
-    pub(crate) link: String,
+    pub link: String,
 }
 
 impl Movie {

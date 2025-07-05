@@ -8,7 +8,7 @@ pub use core::{
 };
 
 #[cfg(feature = "async")]
-pub use client::default::search;
+pub use client::default::Yts;
 
 #[cfg(feature = "blocking")]
 pub use client::blocking;
