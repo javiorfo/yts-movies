@@ -1,14 +1,46 @@
+/// Represents a movie with its basic attributes.
+///
+/// # Fields
+/// - `name`: The title of the movie.
+/// - `year`: The release year of the movie.
+/// - `rating`: The movie's rating (e.g., IMDb score).
+/// - `genre`: A list of genres associated with the movie.
+/// - `image`: URL to the movie's poster or image.
+/// - `link`: URL to more information about the movie.
+///   This field is visible only within the current crate.
 #[derive(Debug)]
 pub struct Movie {
+    /// The title of the movie.
     pub name: String,
+    /// The release year of the movie.
     pub year: u32,
+    /// The movie's rating (e.g., IMDb score).
     pub rating: f32,
+    /// A list of genres associated with the movie.
     pub genre: Vec<Genre>,
+    /// URL or path to the movie's poster or image.
     pub image: String,
-    pub link: String,
+    /// URL to more information about the movie (e.g., IMDb page).
+    /// This field is `pub(crate)`, so it is accessible only within the current crate.
+    pub(crate) link: String,
 }
 
 impl Movie {
+    /// Creates a new `Movie` instance.
+    ///
+    /// # Parameters
+    /// - `name`: The title of the movie.
+    /// - `year`: The release year.
+    /// - `rating`: The movie's rating.
+    /// - `genre`: A vector of genres associated with the movie.
+    /// - `image`: URL to the movie's image.
+    /// - `link`: URL to more information about the movie.
+    ///
+    /// # Returns
+    /// A new `Movie` instance with the specified attributes.
+    ///
+    /// # Visibility
+    /// This constructor is `pub(crate)`, meaning it is public within the current crate only.
     pub(crate) fn new(
         name: String,
         year: u32,
@@ -28,6 +60,9 @@ impl Movie {
     }
 }
 
+/// Represents the genre of a movie.
+///
+/// This enum covers a wide range of genres, including common and niche categories.
 #[derive(Debug)]
 pub enum Genre {
     All,
@@ -60,6 +95,15 @@ pub enum Genre {
 }
 
 impl From<&Genre> for &str {
+    /// Converts a reference to a `Genre` enum variant into its corresponding lowercase string representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let genre = Genre::Action;
+    /// let genre_str: &str = (&genre).into();
+    /// assert_eq!(genre_str, "action");
+    /// ```
     fn from(value: &Genre) -> Self {
         match value {
             Genre::All => "all",
@@ -94,6 +138,20 @@ impl From<&Genre> for &str {
 }
 
 impl From<&str> for Genre {
+    /// Converts a string slice into a `Genre` enum variant.
+    ///
+    /// The input string should match the genre name with exact casing or hyphenation as specified.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the input string does not correspond to any known genre.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let genre = Genre::from("Action");
+    /// assert_eq!(genre, Genre::Action);
+    /// ```
     fn from(value: &str) -> Self {
         match value {
             "Action" => Genre::Action,
@@ -122,7 +180,7 @@ impl From<&str> for Genre {
             "Thriller" => Genre::Thriller,
             "War" => Genre::War,
             "Western" => Genre::Western,
-            _ => unreachable!(),
+            _ => panic!("Invalid genre"),
         }
     }
 }

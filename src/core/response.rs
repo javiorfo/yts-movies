@@ -4,14 +4,29 @@ use crate::{Genre, Quality};
 
 use super::model;
 
+/// Represents pagination information for a movie list page.
 #[derive(Debug)]
 pub struct Page {
+    /// The current page number.
     pub current: u32,
+    /// The total number of pages.
     pub of: u32,
+    /// The total number of movies available.
     pub total: u32,
 }
 
 impl Page {
+    /// Creates a new `Page` instance calculating total pages based on total items.
+    ///
+    /// # Parameters
+    /// - `current`: The current page number.
+    /// - `total`: The total number of movies available.
+    ///
+    /// # Returns
+    /// A `Page` struct with calculated total pages (`of`).
+    ///
+    /// # Notes
+    /// Assumes 20 movies per page.
     fn create(current: u32, total: u32) -> Self {
         let of = if total > 20 {
             (total / 20) + (if total % 20 > 0 { 1 } else { 0 })
@@ -23,13 +38,30 @@ impl Page {
     }
 }
 
+/// Represents the response from a movie listing page.
+///
+/// Contains pagination info and a list of parsed movies.
 #[derive(Debug)]
 pub struct Response {
+    /// Pagination information.
     pub page: Page,
+    /// List of movies parsed from the page.
     pub movies: Vec<model::Movie>,
 }
 
 impl Response {
+    /// Parses HTML content to create a `Response` with movies and pagination info.
+    ///
+    /// # Parameters
+    /// - `host`: Base URL host to prefix relative links.
+    /// - `html`: Raw HTML content of the page.
+    /// - `page`: Current page number.
+    ///
+    /// # Returns
+    /// A `Result` containing the parsed `Response` or an error.
+    ///
+    /// # Errors
+    /// Returns errors if parsing fails or required movie data is missing.
     pub(crate) fn create(host: &str, html: &str, page: u32) -> crate::Result<Self> {
         let document = Html::parse_document(html);
 
@@ -94,17 +126,36 @@ impl Response {
     }
 }
 
+/// Represents a torrent download option for a movie.
 #[derive(Debug)]
 pub struct Torrent {
+    /// The quality of the torrent (e.g., 720p, 1080p).
     pub quality: Quality,
+    /// The size of the torrent file.
     pub size: String,
+    /// The language of the torrent.
     pub language: String,
+    /// The runtime of the movie.
     pub runtime: String,
+    /// Information about peers and seeds.
     pub peers_seeds: String,
+    /// Direct link to the torrent file.
     pub link: String,
 }
 
 impl Torrent {
+    /// Creates a new `Torrent` instance from raw string data.
+    ///
+    /// # Parameters
+    /// - `quality`: Quality string (converted to `Quality` enum).
+    /// - `size`: Size of the torrent.
+    /// - `language`: Language of the torrent.
+    /// - `runtime`: Runtime of the movie.
+    /// - `peers_seeds`: Peers and seeds info.
+    /// - `link`: URL link to the torrent.
+    ///
+    /// # Returns
+    /// A new `Torrent` struct.
     pub(crate) fn new(
         quality: &str,
         size: &str,
@@ -123,6 +174,14 @@ impl Torrent {
         }
     }
 
+    /// Parses HTML content to extract a list of torrents.
+    ///
+    /// # Parameters
+    /// - `host`: Base URL host to prefix relative links.
+    /// - `html`: Raw HTML content containing torrent info.
+    ///
+    /// # Returns
+    /// A `Result` containing a vector of `Torrent` structs or an error.
     pub(crate) fn create(host: &str, html: &str) -> crate::Result<Vec<Self>> {
         let document = Html::parse_document(html);
 
@@ -141,7 +200,7 @@ impl Torrent {
                 .map(|line| {
                     line.text()
                         .map(|t| t.trim())
-                        .filter(|&t| Self::remove_useless_str(t))
+                        .filter(|&t| Self::skip_useless_str(t))
                         .collect::<Vec<_>>()
                 })
                 .collect::<Vec<_>>();
@@ -171,7 +230,10 @@ impl Torrent {
         Ok(torrents)
     }
 
-    fn remove_useless_str(value: &str) -> bool {
+    /// Helper function to filter out unwanted strings during parsing.
+    ///
+    /// Returns `true` if the string is useful, `false` if it should be ignored.
+    fn skip_useless_str(value: &str) -> bool {
         !value.is_empty()
             && value != "P/S"
             && value != "Subtitles"

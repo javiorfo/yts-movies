@@ -25,7 +25,7 @@ async = ["reqwest", "tokio"]
 blocking = ["reqwest"]
 
 [[example]]
-name = "simple"
+name = "async"
 
 [[example]]
 name = "blocking"

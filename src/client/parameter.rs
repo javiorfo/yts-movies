@@ -1,10 +1,34 @@
 use crate::Genre;
 
+/// Builder pattern struct for configuring movie filters.
+///
+/// Wraps a [`Filter`] struct and provides a fluent interface to set filtering options.
+///
+/// # Examples
+///
+/// ```
+/// let filters = Filters::default()
+///     .quality(Quality::P1080)
+///     .genre(Genre::Action)
+///     .rating(Rating::Seven)
+///     .year(Year::Range2000to2009)
+///     .order_by(OrderBy::Rating)
+///     .page(2)
+///     .build();
+/// ```
 #[derive(Debug)]
 pub struct Filters(Filter);
 
 impl Default for Filters {
-    /// Creates a `Filters` builder with default parameters.
+    /// Creates a `Filters` builder with default filter parameters.
+    ///
+    /// Defaults:
+    /// - quality: `Quality::All`
+    /// - genre: `Genre::All`
+    /// - rating: `Rating::All`
+    /// - year: `Year::All`
+    /// - order_by: `OrderBy::Latest`
+    /// - page: 1
     fn default() -> Self {
         Self(Filter {
             quality: Quality::All,
@@ -60,49 +84,66 @@ impl Filters {
     }
 }
 
+/// Represents the finalized set of filters applied to movie queries.
+///
+/// This struct contains all filter parameters as concrete values.
 #[derive(Debug)]
 pub struct Filter {
+    /// Quality filter.
     pub quality: Quality,
+    /// Genre filter.
     pub genre: Genre,
+    /// Rating filter.
     pub rating: Rating,
+    /// Year filter.
     pub year: Year,
+    /// Sorting order.
     pub order_by: OrderBy,
+    /// Page number for pagination.
     pub page: u32,
 }
 
 impl Filter {
+    /// Converts the quality filter to its string representation.
     pub fn quality_to_str(&self) -> &str {
-        let quality = &self.quality;
-        quality.into()
+        (&self.quality).into()
     }
 
+    /// Converts the genre filter to its string representation.
     pub fn genre_to_str(&self) -> &str {
-        let genre = &self.genre;
-        genre.into()
+        (&self.genre).into()
     }
 
+    /// Converts the rating filter to its string representation.
     pub fn rating_to_str(&self) -> &str {
-        let rating = &self.rating;
-        rating.into()
+        (&self.rating).into()
     }
 
+    /// Converts the year filter to its string representation.
+    ///
+    /// Returns a `String` because some year variants represent ranges.
     pub fn year_to_str(&self) -> String {
-        let year = &self.year;
-        year.into()
+        (&self.year).into()
     }
 
+    /// Converts the order_by filter to its string representation.
     pub fn order_by_to_str(&self) -> &str {
-        let order_by = &self.order_by;
-        order_by.into()
+        (&self.order_by).into()
     }
 }
 
+/// Represents video quality filter options.
 #[derive(Debug)]
 pub enum Quality {
+    /// All qualities.
     All,
+    /// 720p resolution.
     P720,
+    /// 1080p resolution.
     P1080,
+    /// 2160p (4K) resolution.
     P2160,
+    /// 3D videos.
     ThreeD,
 }
 
@@ -119,6 +160,10 @@ impl From<&Quality> for &str {
 }
 
 impl From<&str> for Quality {
+    /// Converts a string slice to a `Quality` variant.
+    ///
+    /// The conversion matches substrings "720", "1080", or "2160" to corresponding variants.
+    /// Any other string defaults to `ThreeD`.
     fn from(value: &str) -> Self {
         if value.contains("720") {
             return Self::P720;
@@ -133,17 +178,29 @@ impl From<&str> for Quality {
     }
 }
 
+/// Represents rating filter options.
+///
+/// Ratings from 0 (All) to 9.
 #[derive(Debug)]
 pub enum Rating {
     All,
+    /// Represents 1+
     One,
+    /// Represents 2+
     Two,
+    /// Represents 3+
     Three,
+    /// Represents 4+
     Four,
+    /// Represents 5+
     Five,
+    /// Represents 6+
     Six,
+    /// Represents 7+
     Seven,
+    /// Represents 8+
     Eight,
+    /// Represents 9+
     Nine,
 }
 
@@ -164,15 +221,26 @@ impl From<&Rating> for &str {
     }
 }
 
+/// Represents year filter options.
+///
+/// Includes specific years, ranges, or all years.
 #[derive(Debug)]
 pub enum Year {
+    /// All years.
     All,
+    /// Exact year.
     Equal(u32),
+    /// Year range 2000-2009.
     Range2000to2009,
+    /// Year range 1990-1999.
     Range1990to1999,
+    /// Year range 1980-1989.
     Range1980to1989,
+    /// Year range 1970-1979.
     Range1970to1979,
+    /// Year range 1950-1969.
     Range1950to1969,
+    /// Year range 1900-1949.
     Range1900to1949,
 }
 
@@ -191,14 +259,22 @@ impl From<&Year> for String {
     }
 }
 
+/// Represents ordering options for movie queries.
 #[derive(Debug)]
 pub enum OrderBy {
+    /// Sort by latest.
     Latest,
+    /// Sort by oldest.
     Oldest,
+    /// Sort by featured.
     Featured,
+    /// Sort by year.
     Year,
+    /// Sort by rating.
     Rating,
+    /// Sort by likes.
     Likes,
+    /// Sort alphabetically.
     Alphabetical,
 }
 

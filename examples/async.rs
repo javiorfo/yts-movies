@@ -1,7 +1,8 @@
-use yts_movies::{Filters, OrderBy, Year, blocking};
+use yts_movies::{Filters, OrderBy, Year, Yts};
 
-fn main() {
-    let yts = blocking::Yts::default();
+#[tokio::main]
+async fn main() {
+    let yts = Yts::default();
     let response = yts
         .search_with_filter(
             "the godfather",
@@ -10,6 +11,7 @@ fn main() {
                 .order_by(OrderBy::Rating)
                 .build(),
         )
+        .await
         .expect("Error searching movies");
 
     println!("{response:#?}");
@@ -17,6 +19,7 @@ fn main() {
     // Getting the torrents of the first movie
     let torrents = yts
         .torrents(&response.movies[0])
+        .await
         .expect("error searching torrents");
 
     println!("{torrents:#?}");
