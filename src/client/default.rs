@@ -158,7 +158,11 @@ mod test {
             )
             .await;
 
+        assert!(results.is_ok());
+        assert!(!results.as_ref().unwrap().movies.is_empty());
+
         let torrents = yts.torrents(&results.unwrap().movies[0]).await;
-        println!("{torrents:#?}");
+
+        assert!(torrents.is_ok());
     }
 }

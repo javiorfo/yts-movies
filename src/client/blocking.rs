@@ -109,7 +109,11 @@ mod test {
             Filters::default().year(crate::Year::Equal(1974)).build(),
         );
 
+        assert!(results.is_ok());
+        assert!(!results.as_ref().unwrap().movies.is_empty());
+
         let torrents = yts.torrents(&results.unwrap().movies[0]);
-        println!("{torrents:#?}");
+
+        assert!(torrents.is_ok());
     }
 }
