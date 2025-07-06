@@ -11,14 +11,14 @@ Add this crate to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-yts_movies = "0.1.0"
+yts-movies = "0.1.0"
 ```
 
 #### Enable blocking feature if needed
 
 ```toml
 [dependencies]
-yts_movies = { version = "0.1.0", features = ["blocking"] }
+yts-movies = { version = "0.1.0", features = ["blocking"] }
 ```
 
 ## Async Example (default)
