@@ -2,8 +2,6 @@ use crate::Genre;
 
 /// Builder pattern struct for configuring movie filters.
 ///
-/// Wraps a [`Filter`] struct and provides a fluent interface to set filtering options.
-///
 /// # Examples
 ///
 /// ```
@@ -78,7 +76,7 @@ impl Filters {
         self
     }
 
-    /// Builds and returns the configured [`Filter`].
+    /// Builds and returns the configured filter.
     pub fn build(self) -> Filter {
         self.0
     }

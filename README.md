@@ -61,7 +61,7 @@ async fn main() -> yts_movies::Result {
 - Obtain not only info and metadata but also a torrent download link of the movie.
 
 ## Docs
-Find all the configuration options in the full [documentation](https://docs.rs/yts-movies/0.1.0/yts-movies/).
+Find all the configuration options in the full [documentation](https://docs.rs/yts-movies/0.1.0/yts_movies/).
 
 ---
 
