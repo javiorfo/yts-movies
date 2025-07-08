@@ -11,13 +11,15 @@ use crate::{Movie, Response, Torrent, client::Filter};
 /// # Examples
 ///
 /// ```
-/// # async fn example() -> crate::Result<()> {
-/// let yts = Yts::default();
-/// let response = yts.search("Inception").await?;
-/// for movie in response.movies {
-///     println!("{:?}", movie);
-/// }
-/// # Ok(())
+/// use yts_movies;
+///
+/// # async fn example() -> yts_movies::Result {
+///     let yts = yts_movies::Yts::default();
+///     let response = yts.search("Inception").await?;
+///     for movie in response.movies {
+///         println!("{:?}", movie);
+///     }
+/// #   Ok(())
 /// # }
 /// ```
 #[derive(Debug)]

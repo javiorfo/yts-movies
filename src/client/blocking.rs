@@ -12,13 +12,18 @@ use crate::{Movie, Response, Torrent, client::Filter};
 /// # Examples
 ///
 /// ```
-/// # async fn example() -> crate::Result<()> {
-/// let yts = blocking::Yts::default();
-/// let response = yts.search("Inception")?;
-/// for movie in response.movies {
-///     println!("{:?}", movie);
-/// }
-/// # Ok(())
+/// # #[cfg(feature = "blocking")]
+/// # {
+/// use yts_movies::blocking;
+///
+/// # fn example() -> yts_movies::Result {
+///     let yts = blocking::Yts::default();
+///     let response = yts.search("Inception")?;
+///     for movie in response.movies {
+///         println!("{:?}", movie);
+///     }
+/// #   Ok(())
+/// # }
 /// # }
 /// ```
 #[derive(Debug, Default)]

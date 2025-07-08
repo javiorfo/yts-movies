@@ -11,14 +11,14 @@ Add this crate to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-yts-movies = "0.1.0"
+yts-movies = "0.1.1"
 ```
 
 #### Enable blocking feature if needed
 
 ```toml
 [dependencies]
-yts-movies = { version = "0.1.0", features = ["blocking"] }
+yts-movies = { version = "0.1.1", features = ["blocking"] }
 ```
 
 ## Async Example (default)
@@ -61,7 +61,7 @@ async fn main() -> yts_movies::Result {
 - Obtain not only info and metadata but also a torrent download link of the movie.
 
 ## Docs
-Find all the configuration options in the full [documentation](https://docs.rs/yts-movies/0.1.0/yts_movies/).
+Find all the configuration options in the full [documentation](https://docs.rs/yts-movies/0.1.1/yts_movies/).
 
 ---
 

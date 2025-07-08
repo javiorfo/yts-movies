@@ -8,21 +8,6 @@
 //! - Rich filtering options such as quality, genre, rating, year, and sorting order.
 //! - Parsing of HTML responses to extract movie and torrent metadata.
 //!
-//! ## Usage
-//!
-//! Add this crate to your `Cargo.toml`:
-//!
-//! ```
-//! [dependencies]
-//! yts-movies = "0.1.0"
-//! ```
-//!
-//! #### Enable blocking feature if needed
-//!
-//! ```
-//! [dependencies]
-//! yts-movies = { version = "0.1.0", features = ["blocking"] }
-//! ```
 //!
 //! ### Async Example (default)
 //!
