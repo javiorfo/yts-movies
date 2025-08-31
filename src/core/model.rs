@@ -4,7 +4,7 @@
 /// - `name`: The title of the movie.
 /// - `year`: The release year of the movie.
 /// - `rating`: The movie's rating (e.g., IMDb score).
-/// - `genre`: A list of genres associated with the movie.
+/// - `genres`: A list of genres associated with the movie.
 /// - `image`: URL to the movie's poster or image.
 /// - `link`: URL to more information about the movie.
 ///   This field is visible only within the current crate.
@@ -17,7 +17,7 @@ pub struct Movie {
     /// The movie's rating (e.g., IMDb score).
     pub rating: f32,
     /// A list of genres associated with the movie.
-    pub genre: Vec<Genre>,
+    pub genres: Vec<Genre>,
     /// URL or path to the movie's poster or image.
     pub image: String,
     /// URL to more information about the movie (e.g., IMDb page).
@@ -32,7 +32,7 @@ impl Movie {
     /// - `name`: The title of the movie.
     /// - `year`: The release year.
     /// - `rating`: The movie's rating.
-    /// - `genre`: A vector of genres associated with the movie.
+    /// - `genres`: A vector of genres associated with the movie.
     /// - `image`: URL to the movie's image.
     /// - `link`: URL to more information about the movie.
     ///
@@ -45,7 +45,7 @@ impl Movie {
         name: String,
         year: u32,
         rating: f32,
-        genre: Vec<Genre>,
+        genres: Vec<Genre>,
         image: String,
         link: String,
     ) -> Self {
@@ -53,7 +53,7 @@ impl Movie {
             name,
             year,
             rating,
-            genre,
+            genres,
             image,
             link,
         }
@@ -186,5 +186,18 @@ impl From<&str> for Genre {
             "Western" => Genre::Western,
             _ => panic!("Invalid genre"),
         }
+    }
+}
+
+/// Implements the `Display` trait for the `Genre` enum.
+///
+/// This implementation allows `Genre` variants to be easily formatted into
+/// user-facing strings using the `{}` format specifier. It uses the `Debug`
+/// implementation to get a simple string representation of the enum variant
+/// name (e.g., `Action`, `SciFi`).
+impl std::fmt::Display for Genre {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        // Use a match statement to convert each enum variant to a string
+        write!(f, "{:?}", self)
     }
 }
