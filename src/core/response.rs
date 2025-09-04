@@ -215,12 +215,14 @@ impl Torrent {
                     let data = &data[i];
                     let qualities = &qualities[i];
 
+                    let index = if !data[3].contains("R") { 3 } else { 4 };
+
                     torrents.push(Torrent::new(
                         qualities[0],
                         data[0],
                         data[2],
-                        data[3],
-                        data[4],
+                        data[index],
+                        data[index + 1],
                         link,
                     ));
                 }
