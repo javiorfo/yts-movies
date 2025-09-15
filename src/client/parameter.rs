@@ -133,7 +133,7 @@ impl Filter {
 }
 
 /// Represents video quality filter options.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Quality {
     /// All qualities.
     All,
@@ -181,7 +181,7 @@ impl From<&str> for Quality {
 /// Represents rating filter options.
 ///
 /// Ratings from 0 (All) to 9.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Rating {
     All,
     /// Represents 1+
@@ -224,7 +224,7 @@ impl From<&Rating> for &str {
 /// Represents year filter options.
 ///
 /// Includes specific years, ranges, or all years.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Year {
     /// All years.
     All,
@@ -260,7 +260,7 @@ impl From<&Year> for String {
 }
 
 /// Represents ordering options for movie queries.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum OrderBy {
     /// Sort by latest.
     Latest,
@@ -288,6 +288,23 @@ impl From<&OrderBy> for &str {
             OrderBy::Rating => "rating",
             OrderBy::Likes => "likes",
             OrderBy::Alphabetical => "alphabetical",
+        }
+    }
+}
+
+impl TryFrom<&str> for OrderBy {
+    type Error = String;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
+            "latest" => Ok(OrderBy::Latest),
+            "oldest" => Ok(OrderBy::Oldest),
+            "featured" => Ok(OrderBy::Featured),
+            "year" => Ok(OrderBy::Year),
+            "rating" => Ok(OrderBy::Rating),
+            "likes" => Ok(OrderBy::Likes),
+            "alphabetical" => Ok(OrderBy::Alphabetical),
+            _ => Err(format!("Invalid value for OrderBy: {value}")),
         }
     }
 }

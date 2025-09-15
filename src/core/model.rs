@@ -63,7 +63,7 @@ impl Movie {
 /// Represents the genre of a movie.
 ///
 /// This enum covers a wide range of genres, including common and niche categories.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Genre {
     All,
     Action,
