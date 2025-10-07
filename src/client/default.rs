@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use reqwest::header::USER_AGENT;
+use reqwest::{Url, header::USER_AGENT};
 
 use crate::{Movie, Response, Torrent, client::Filter};
 
@@ -72,7 +72,7 @@ impl<'a> Yts<'a> {
         let client = reqwest::Client::new();
 
         let response = client
-            .get(self.create_url(movie_name, &filter))
+            .get(self.create_url(movie_name, &filter)?)
             .header(USER_AGENT, "Mozilla/5.0 (Linux x86_64)")
             .timeout(self.timeout)
             .send()
@@ -127,20 +127,23 @@ impl<'a> Yts<'a> {
     ///
     /// # Returns
     /// A `String` containing the fully constructed URL.
-    pub(crate) fn create_url(&self, movie_name: &str, filter: &Filter) -> String {
-        let movie_name = movie_name.trim().replace(" ", "+");
+    pub(crate) fn create_url(&self, movie_name: &str, filter: &Filter) -> crate::Result<String> {
+        let mut url: reqwest::Url = Url::parse(&format!("{}/browse-movies", self.host))
+            .map_err(|_| crate::Error::ParseError(self.host.to_string()))?;
 
-        format!(
-            "{}/browse-movies?keyword={}&quality={}&genre={}&rating={}&year={}&order_by={}&page={}",
-            self.host,
-            movie_name,
+        url.query_pairs_mut()
+            .append_pair("keyword", movie_name.trim());
+
+        Ok(format!(
+            "{}&quality={}&genre={}&rating={}&year={}&order_by={}&page={}",
+            url.as_str(),
             filter.quality_to_str(),
             filter.genre_to_str(),
             filter.rating_to_str(),
             filter.year_to_str(),
             filter.order_by_to_str(),
             filter.page
-        )
+        ))
     }
 }
 
@@ -151,7 +154,7 @@ mod test {
     use super::Yts;
 
     #[tokio::test]
-    async fn test_blocking_search() {
+    async fn test_async_search_with_filters() {
         let yts = Yts::default();
         let results = yts
             .search_with_filter(
@@ -159,6 +162,19 @@ mod test {
                 Filters::default().year(crate::Year::Equal(1974)).build(),
             )
             .await;
+
+        assert!(results.is_ok());
+        assert!(!results.as_ref().unwrap().movies.is_empty());
+
+        let torrents = yts.torrents(&results.unwrap().movies[0]).await;
+
+        assert!(torrents.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_async_search() {
+        let yts = Yts::default();
+        let results = yts.search("killers of the flower moon").await;
 
         assert!(results.is_ok());
         assert!(!results.as_ref().unwrap().movies.is_empty());

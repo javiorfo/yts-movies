@@ -119,6 +119,10 @@ pub enum Error {
     /// Error indicating failure to extract the movie name from HTML.
     #[error("Error getting movie name")]
     MovieNameError,
+
+    /// Error parsing an url.
+    #[error("Error parsing url {0}")]
+    ParseError(String),
 }
 
 /// A convenient alias for `Result` with the crate's [`Error`] type.

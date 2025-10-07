@@ -55,7 +55,7 @@ impl<'a> Yts<'a> {
         let client = reqwest::blocking::Client::new();
 
         let response = client
-            .get(self.inner.create_url(movie_name, &filter))
+            .get(self.inner.create_url(movie_name, &filter)?)
             .header(USER_AGENT, "Mozilla/5.0 (Linux x86_64)")
             .timeout(self.inner.timeout)
             .send()?;
