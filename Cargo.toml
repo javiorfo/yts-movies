@@ -1,6 +1,6 @@
 [package]
 name = "yts-movies"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 description = "Library to search YTS movies info and torrent links"
 authors = ["Javier Orfo <javierorfo@protonmail.com>"]
@@ -14,15 +14,17 @@ name = "yts_movies"
 path = "src/lib.rs"
 
 [dependencies]
-reqwest = { version = "0.12.20", features = ["blocking"], optional = true }
-tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"], optional = true }
+reqwest = { version = "0.12.20", optional = true }
 scraper = "0.23.1"
 thiserror = "2.0.12"
 
+[dev-dependencies]
+tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"] }
+
 [features]
 default = ["async"]
-async = ["reqwest", "tokio"]
-blocking = ["reqwest"]
+async = ["dep:reqwest"]
+blocking = ["dep:reqwest", "reqwest/blocking"]
 
 [[example]]
 name = "async"
