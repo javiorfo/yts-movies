@@ -34,7 +34,7 @@ impl Default for Yts<'_> {
     /// Creates a default `Yts` client with the official host and a 10-second timeout.
     fn default() -> Self {
         Self {
-            host: "https://en.yts-official.mx",
+            host: "https://yts.lt",
             timeout: Duration::from_secs(10),
         }
     }
@@ -78,7 +78,7 @@ impl<'a> Yts<'a> {
             .send()
             .await?;
 
-        Response::create(self.host, &response.text().await?, filter.page)
+        Response::create(&response.text().await?, filter.page)
     }
 
     /// Searches for movies by name using default filter parameters.
@@ -116,7 +116,7 @@ impl<'a> Yts<'a> {
             .send()
             .await?;
 
-        Torrent::create(self.host, &response.text().await?)
+        Torrent::create(&response.text().await?)
     }
 
     /// Constructs the URL for a movie search with the specified filters.
@@ -128,21 +128,26 @@ impl<'a> Yts<'a> {
     /// # Returns
     /// A `String` containing the fully constructed URL.
     pub(crate) fn create_url(&self, movie_name: &str, filter: &Filter) -> crate::Result<String> {
-        let mut url: reqwest::Url = Url::parse(&format!("{}/browse-movies", self.host))
-            .map_err(|_| crate::Error::ParseError(self.host.to_string()))?;
-
-        url.query_pairs_mut()
-            .append_pair("keyword", movie_name.trim());
+        let url: reqwest::Url = Url::parse(&format!(
+            "{}/browse-movies/{}",
+            self.host,
+            movie_name.trim()
+        ))
+        .map_err(|_| crate::Error::ParseError(self.host.to_string()))?;
 
         Ok(format!(
-            "{}&quality={}&genre={}&rating={}&year={}&order_by={}&page={}",
+            "{}/{}/{}/{}/{}/{}/all{}",
             url.as_str(),
             filter.quality_to_str(),
             filter.genre_to_str(),
             filter.rating_to_str(),
-            filter.year_to_str(),
             filter.order_by_to_str(),
-            filter.page
+            filter.year_to_str(),
+            if filter.page <= 1 {
+                ""
+            } else {
+                &format!("?page={}", filter.page)
+            }
         ))
     }
 }
@@ -159,14 +164,13 @@ mod test {
         let results = yts
             .search_with_filter(
                 "the godfather",
-                Filters::default().year(crate::Year::Equal(1974)).build(),
+                Filters::default().year(crate::Year::Equal(1972)).build(),
             )
             .await;
 
         assert!(results.is_ok());
         assert!(!results.as_ref().unwrap().movies.is_empty());
-
-        let torrents = yts.torrents(&results.unwrap().movies[0]).await;
+        let torrents = yts.torrents(&results.unwrap().movies[1]).await;
 
         assert!(torrents.is_ok());
     }
@@ -181,6 +185,7 @@ mod test {
 
         let torrents = yts.torrents(&results.unwrap().movies[0]).await;
 
+        println!("{torrents:?}");
         assert!(torrents.is_ok());
     }
 }

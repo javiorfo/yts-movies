@@ -53,7 +53,6 @@ impl Response {
     /// Parses HTML content to create a `Response` with movies and pagination info.
     ///
     /// # Parameters
-    /// - `host`: Base URL host to prefix relative links.
     /// - `html`: Raw HTML content of the page.
     /// - `page`: Current page number.
     ///
@@ -62,7 +61,7 @@ impl Response {
     ///
     /// # Errors
     /// Returns errors if parsing fails or required movie data is missing.
-    pub(crate) fn create(host: &str, html: &str, page: u32) -> crate::Result<Self> {
+    pub(crate) fn create(html: &str, page: u32) -> crate::Result<Self> {
         let document = Html::parse_document(html);
 
         let total: u32 = document
@@ -75,23 +74,19 @@ impl Response {
         let mut movies = Vec::new();
         if let Some(div) = document.select(&Selector::parse("section div.row")?).next() {
             for line in div.select(&Selector::parse("div.browse-movie-wrap")?) {
-                let link = format!(
-                    "{}{}",
-                    host,
-                    line.select(&Selector::parse("a.browse-movie-link")?)
-                        .next()
-                        .and_then(|e| e.attr("href"))
-                        .unwrap_or_default()
-                );
+                let link = line
+                    .select(&Selector::parse("a.browse-movie-link")?)
+                    .next()
+                    .and_then(|e| e.attr("href"))
+                    .unwrap_or_default()
+                    .to_string();
 
-                let image = format!(
-                    "{}{}",
-                    host,
-                    line.select(&Selector::parse("img")?)
-                        .next()
-                        .and_then(|e| e.attr("src"))
-                        .unwrap_or_default()
-                );
+                let image = line
+                    .select(&Selector::parse("img")?)
+                    .next()
+                    .and_then(|e| e.attr("src"))
+                    .unwrap_or_default()
+                    .to_string();
 
                 let info = line
                     .text()
@@ -99,7 +94,7 @@ impl Response {
                     .collect::<Vec<_>>();
 
                 let rating = info.first().ok_or(crate::Error::MovieRatingError)?;
-                let rating = &rating[..2];
+                let rating = &rating[..1];
                 let rating: f32 = rating.parse()?;
 
                 let year: u32 = info.last().ok_or(crate::Error::MovieYearError)?.parse()?;
@@ -177,12 +172,11 @@ impl Torrent {
     /// Parses HTML content to extract a list of torrents.
     ///
     /// # Parameters
-    /// - `host`: Base URL host to prefix relative links.
     /// - `html`: Raw HTML content containing torrent info.
     ///
     /// # Returns
     /// A `Result` containing a vector of `Torrent` structs or an error.
-    pub(crate) fn create(host: &str, html: &str) -> crate::Result<Vec<Self>> {
+    pub(crate) fn create(html: &str) -> crate::Result<Vec<Self>> {
         let document = Html::parse_document(html);
 
         let mut torrents = Vec::new();
@@ -209,22 +203,25 @@ impl Torrent {
                 .select(&Selector::parse("div#movie-info p")?)
                 .next()
             {
+                let data_len = data.len();
                 for (i, line) in movie_info.select(&Selector::parse("a")?).enumerate() {
-                    let link = format!("{}{}", host, line.attr("href").unwrap_or_default());
+                    let link = line.attr("href").unwrap_or_default().to_string();
 
-                    let data = &data[i];
-                    let qualities = &qualities[i];
+                    if i < data_len {
+                        let data = &data[i];
+                        let qualities = &qualities[i];
 
-                    let index = if !data[3].contains("R") { 3 } else { 4 };
+                        let index = if !data[3].contains("R") { 3 } else { 4 };
 
-                    torrents.push(Torrent::new(
-                        qualities[0],
-                        data[0],
-                        data[2],
-                        data[index],
-                        data[index + 1],
-                        link,
-                    ));
+                        torrents.push(Torrent::new(
+                            qualities[0],
+                            data[0],
+                            data[2],
+                            data[index],
+                            data[index + 1],
+                            link,
+                        ));
+                    }
                 }
             }
         }

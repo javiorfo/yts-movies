@@ -158,6 +158,7 @@ impl From<&str> for Genre {
     /// ```
     fn from(value: &str) -> Self {
         match value {
+            "All" => Genre::All,
             "Action" => Genre::Action,
             "Adventure" => Genre::Adventure,
             "Animation" => Genre::Animation,
@@ -184,7 +185,7 @@ impl From<&str> for Genre {
             "Thriller" => Genre::Thriller,
             "War" => Genre::War,
             "Western" => Genre::Western,
-            _ => panic!("Invalid genre"),
+            _ => Genre::All,
         }
     }
 }

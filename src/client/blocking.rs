@@ -60,7 +60,7 @@ impl<'a> Yts<'a> {
             .timeout(self.inner.timeout)
             .send()?;
 
-        Response::create(self.inner.host, &response.text()?, filter.page)
+        Response::create(&response.text()?, filter.page)
     }
 
     /// Searches for movies by name using default filter parameters.
@@ -96,7 +96,7 @@ impl<'a> Yts<'a> {
             .timeout(self.inner.timeout)
             .send()?;
 
-        Torrent::create(self.inner.host, &response.text()?)
+        Torrent::create(&response.text()?)
     }
 }
 
