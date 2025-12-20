@@ -185,7 +185,6 @@ mod test {
 
         let torrents = yts.torrents(&results.unwrap().movies[0]).await;
 
-        println!("{torrents:?}");
         assert!(torrents.is_ok());
     }
 }

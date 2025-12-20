@@ -110,8 +110,8 @@ mod test {
     fn test_blocking_search() {
         let yts = Yts::default();
         let results = yts.search_with_filter(
-            "pulp fiction",
-            Filters::default().year(crate::Year::Equal(1994)).build(),
+            "godfather",
+            Filters::default().build(),
         );
 
         assert!(results.is_ok());

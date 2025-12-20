@@ -102,6 +102,7 @@ impl Response {
                 let name = info
                     .get(info.len() - 2)
                     .ok_or(crate::Error::MovieNameError)?
+                    .trim()
                     .to_string();
 
                 let mut genres = Vec::new();
